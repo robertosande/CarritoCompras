@@ -63,20 +63,32 @@ class articulo {
     }
 }
 
-/* const articulos = [
-    new articulo('MONOPATIN ELECTRICO', 'VEHICULO', 15000, 2020, 200, 1, 1, './img/monoElectrico.png'),
-    new articulo('BICICLETA', 'VEHICULO', 20000, 2021, 100, 2, 1, './img/bici.jpg'),
-    new articulo('PELOTA MUNDIAL 2022', 'DEPORTE', 3000, 2022, 300, 3, 1, './img/pelotaMundial.jpg'),
-    new articulo('SKATE', 'VEHICULO', 10000, 2020, 250, 4, 1, './img/skate.jpg'),
-    new articulo('HELADERA SAMSUNG', 'HOGAR', 95000, 2020, 50, 5, 1, './img/heladeraSamsung.jpg'),
-    new articulo('HORNO', 'HOGAR', 60000, 2021, 60, 6, 1, './img/horno.jpg'),
-    new articulo('TV SMART 32 SAMSUNG"', 'HOGAR', 55000, 2021, 150, 7, 1, './img/tvSmart32Samsung.jpg'),
-    new articulo('AURICULARES INALAMBRICOS LOGITECH', 'TECNOLOGIA', 9500, 2020, 200, 8, 1, './img/aurisLogitech.jpg'),
-    new articulo('TECLADO MECANICO REDRAGON', 'TECNOLOGIA', 12000, 2021, 210, 9, 1, './img/tecladoRedragon.jpg'),
-    new articulo('MOUSE GAMER', 'TECNOLOGIA', 9500, 2022, 300, 10, 1, './img/MouseGame.jpg')
-]; */
-
 const carrito = [];
+
+const Articulos =[];
+function copiarDB(arts){
+    for(let x =0; x < arts.length; x++){
+    Articulos.push(arts[x]);        //copio la BD a medida que la recorre por la cantidad de elementos que tiene
+  }
+}
+function llamarDB(url){
+    fetch(url)
+    .then(respuesta => respuesta.json()) //llamo a copiarDB para pasarle la data del fetch
+    .then(articulos => {
+        copiarDB(articulos); // envio info del fetch para pushearla dentro de mi array
+        
+    })
+    .catch(function error(){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No se encontro lo que buscabas',
+            footer: '<a href="https://www.mercadolibre.com.ar/">¿Quizas quisiste ingresar aqui?</a>'
+          })
+    })
+}
+llamarDB('./js/Articulos.json');
+console.log(Articulos);
 
 
 function registroUsuario(usuariosDB, userRegistro, passRegistro, passConfirmacion) {
@@ -112,11 +124,11 @@ function registroUsuario(usuariosDB, userRegistro, passRegistro, passConfirmacio
 function inicioSesion(usuariosDB, userLogin, contraLogin) {
     let userIngresado = usuariosDB.find((usuariosDB) => usuariosDB.user == userLogin);
 
-    if (typeof userIngresado === 'undefined') {    //TYPEOF dice cual es el tipo de dato de la variable
+    if (typeof userIngresado === 'undefined') {    //si el usuario buscado no esta definido va a tirar que no existe
         return false;
     } else {
-        //si estoy en este punto, quiere decir que el mail existe, sólo queda comparar la contraseña
-        if (userIngresado.pass != contraLogin) {
+        
+        if (userIngresado.pass != contraLogin) {    //aca significa que el usuario existe, y comparo la contraseña
             return false;
         } else {
             return userIngresado;
@@ -128,7 +140,7 @@ function logueoGuardado(usuario) {
 
     if (usuario) {
         saludoUs(usuario);
-        mostrarData();
+        mostrarArticulos(Articulos);
         intercambiarPresentacion(toggles, 'd-none');
     }
 
@@ -174,54 +186,45 @@ function mostrarArticulos(array) {
 }
 
 
-
-
-async function agregarAlCarrito(articuloID) { // DESCONTAR STOCK DE LA PAGINA AL AGREGAR AL CARRITO
-    const respuesta = await fetch('./js/Articulos.json'); 
-    const data = await respuesta.json();
+ function agregarAlCarrito(articuloID) { // DESCONTAR STOCK DE LA PAGINA AL AGREGAR AL CARRITO
 
     
     const repetido = carrito.some(articulo => articulo.id === articuloID)
-    
-    if (repetido) {
+    Articulos[articuloID].stock-=1;
+    if(Articulos[articuloID].stock>=0)
+    {
+        if (repetido) {
 
         const producto = carrito.map(producto => {
 
-            if (producto.id === articuloID) { 
-                producto.unidad++;
-                data[articuloID].stock-=1;
-                //console.log(data);
-                };
+            (producto.id === articuloID) && producto.unidad++;
             
-           
+            
+            
         })
-
 
         
     } else {
 
-        const producto = data.find((articulo) => articulo.id === articuloID);
-        data[articuloID].stock-=1;
-
+        const producto = Articulos.find((articulo) => articulo.id === articuloID);
         carrito.push(producto);
         
-        
     }
-    console.log(data);
     actualizarCarrito();
-    mostrarArticulos(data);
+    mostrarArticulos(Articulos);
+}else{
+    Swal.fire({
+        icon: 'error',
+        title: 'ERROR',
+        text: 'No hay suficientes unidades en el stock',
+        
+      })
+}
     
     
 }
 
 
-/* async function actualizarStock(artStock){
-
-    artStock -=1 ; 
-    console.log(artStock);
-    
-
-} */
 
 
 function actualizarCarrito() {
@@ -289,13 +292,16 @@ function buscar(array, atributo, input) {
 }
 
 busqueda.forEach(input => {
+
     input.addEventListener('input', () => {
         let palabra = (input.value).toUpperCase();
-        mostrarArticulos(buscar(articulos, input.id, palabra), articulosDisponibles);
-    })
+         mostrarArticulos(buscar(Articulos, input.id, palabra), articulosDisponibles);
+        })
+        
+    
     input.onblur = () => {
         input.value = '';
-
+        mostrarArticulos(Articulos);
     }
 
 });
@@ -310,15 +316,6 @@ function limpiarCarrito() {
     carrito.length = 0;
     actualizarCarrito();
 }
-
-
-function mostrarData(){
-    fetch('./js/Articulos.json') //traigo la info desde el archivo JSON (fake API)
-        .then((respuesta) => respuesta.json())
-        .then((data) => { mostrarArticulos(data);
-        })
-}
-
 
 
 
@@ -355,7 +352,7 @@ btnIniciar.addEventListener('click', (e) => {
                 modalInicio.hide();
                 i = 0;
                 
-                mostrarData();
+                mostrarArticulos(Articulos);
                 intercambiarPresentacion(toggles, 'd-none');
 
 
