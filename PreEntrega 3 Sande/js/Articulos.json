@@ -1,0 +1,122 @@
+[
+    {
+        "nombre": "MONOPATIN ELECTRICO",
+        "categoria": "VEHICULO",
+        "precio": 15000,
+        "anio": 2020,
+        "stock": 200,
+        "id": 0,
+        "unidad": 1,
+        "img": "./img/monoElectrico.png"
+    },
+    {
+        "nombre": "BICICLETA",
+        "categoria": "VEHICULO",
+        "precio": 20000,
+        "anio": 2021,
+        "stock": 100,
+        "id": 1,
+        "unidad": 1,
+        "img": "./img/bici.jpg"
+    },
+    {
+        "nombre": "VESPA",
+        "categoria": "VEHICULO",
+        "precio": 160000,
+        "anio": 2021,
+        "stock": 5,
+        "id": 2,
+        "unidad": 1,
+        "img": "./img/vespa.jpg"
+    },
+    {
+        "nombre": "PELOTA MUNDIAL 2022",
+        "categoria": "DEPORTE",
+        "precio": 3000,
+        "anio": 2022,
+        "stock": 300,
+        "id": 3,
+        "unidad": 1,
+        "img": "./img/pelotaMundial.jpg"
+    },
+    {
+        "nombre": "GUANTES BOXEO ADIDAS",
+        "categoria": "DEPORTE",
+        "precio": 11000,
+        "anio": 2020,
+        "stock": 200,
+        "id": 4,
+        "unidad": 1,
+        "img": "./img/guantesBoxeo.jpg"
+    },
+    {
+        "nombre": "SKATE",
+        "categoria": "VEHICULO",
+        "precio": 10000,
+        "anio": 2020,
+        "stock": 250,
+        "id": 5,
+        "unidad": 1,
+        "img": "./img/skate.jpg"
+    },
+    {
+        "nombre": "HELADERA SAMSUNG",
+        "categoria": "HOGAR",
+        "precio": 95000,
+        "anio": 2020,
+        "stock": 50,
+        "id": 6,
+        "unidad": 1,
+        "img": "./img/heladeraSamsung.jpg"
+    },
+    {
+        "nombre": "HORNO",
+        "categoria": "HOGAR",
+        "precio": 60000,
+        "anio": 2021,
+        "stock": 60,
+        "id": 7,
+        "unidad": 1,
+        "img": "./img/horno.jpg"
+    },
+    {
+        "nombre": "TV SMART 32 SAMSUNG",
+        "categoria": "HOGAR",
+        "precio": 55000,
+        "anio": 2021,
+        "stock": 150,
+        "id": 8,
+        "unidad": 1,
+        "img": "./img/tvSmart32Samsung.jpg"
+    },
+    {
+        "nombre": "AURICULARES INALAMBRICOS LOGITECH",
+        "categoria": "TECNOLOGIA",
+        "precio": 9500,
+        "anio": 2020,
+        "stock": 200,
+        "id": 9,
+        "unidad": 1,
+        "img": "./img/aurisLogitech.jpg"
+    },
+    {
+        "nombre": "TECLADO MECANICO REDRAGON",
+        "categoria": "TECNOLOGIA",
+        "precio": 12000,
+        "anio": 2021,
+        "stock": 210,
+        "id": 10,
+        "unidad": 1,
+        "img": "./img/tecladoRedragon.jpg"
+    },
+    {
+        "nombre": "MOUSE GAMER",
+        "categoria": "TECNOLOGIA",
+        "precio": 9500,
+        "anio": 2022,
+        "stock": 300,
+        "id": 11,
+        "unidad": 1,
+        "img": "./img/MouseGame.jpg"
+    }
+    ]
