@@ -63,17 +63,30 @@ class articulo {
     }
 }
 
+/* const Articulos = [
+    new articulo('MONOPATIN ELECTRICO', 'VEHICULO', 15000, 2020, 200, 1, 1, './img/monoElectrico.png'),
+    new articulo('BICICLETA', 'VEHICULO', 20000, 2021, 100, 2, 1, './img/bici.jpg'),
+    new articulo('PELOTA MUNDIAL 2022', 'DEPORTE', 3000, 2022, 300, 3, 1, './img/pelotaMundial.jpg'),
+    new articulo('SKATE', 'VEHICULO', 10000, 2020, 250, 4, 1, './img/skate.jpg'),
+    new articulo('HELADERA SAMSUNG', 'HOGAR', 95000, 2020, 50, 5, 1, './img/heladeraSamsung.jpg'),
+    new articulo('HORNO', 'HOGAR', 60000, 2021, 60, 6, 1, './img/horno.jpg'),
+    new articulo('TV SMART 32 SAMSUNG"', 'HOGAR', 55000, 2021, 150, 7, 1, './img/tvSmart32Samsung.jpg'),
+    new articulo('AURICULARES INALAMBRICOS LOGITECH', 'TECNOLOGIA', 9500, 2020, 200, 8, 1, './img/aurisLogitech.jpg'),
+    new articulo('TECLADO MECANICO REDRAGON', 'TECNOLOGIA', 12000, 2021, 210, 9, 1, './img/tecladoRedragon.jpg'),
+    new articulo('MOUSE GAMER', 'TECNOLOGIA', 9500, 2022, 300, 10, 1, './img/MouseGame.jpg')
+]; */
 const carrito = [];
 
 const Articulos =[];
-function copiarDB(arts){
+
+function copiarDB(arts){    //copio la BD a medida que la recorre por la cantidad de elementos que tiene
     for(let x =0; x < arts.length; x++){
-    Articulos.push(arts[x]);        //copio la BD a medida que la recorre por la cantidad de elementos que tiene
+    Articulos.push(arts[x]);        
   }
 }
-function llamarDB(url){
+function llamarDB(url){ //llamo a copiarDB para pasarle la data del fetch
     fetch(url)
-    .then(respuesta => respuesta.json()) //llamo a copiarDB para pasarle la data del fetch
+    .then(respuesta => respuesta.json()) 
     .then(articulos => {
         copiarDB(articulos); // envio info del fetch para pushearla dentro de mi array
         
@@ -88,29 +101,44 @@ function llamarDB(url){
     })
 }
 llamarDB('./js/Articulos.json');
-console.log(Articulos);
+//console.log(Articulos);
 
 
-function registroUsuario(usuariosDB, userRegistro, passRegistro, passConfirmacion) {
+function registroUsuario(usuariosDB, userRegistro, passRegistro, passConfirmacion) {    //funcion que se encarga de registrar nuevos usuarios, si es que no existen previamente
     while (validacionUs == false) {
         let nuevoUser = userRegistro.toLowerCase();
         let nuevoPass = passRegistro.toLowerCase();
         let confirmacionPass = passConfirmacion.toLowerCase();
         const comparacionUser = usuariosDB.filter((usuario) => usuario.user === nuevoUser);
-        if (comparacionUser != 0) {
+        if (comparacionUser != 0) { // si usuario ingresado es igual a uno existente avisara que ya existe
 
-            return (alert('Usuario ingresado ya existe, por favor ingrese uno nuevamente.'));
+            return (
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Usuario invalido',
+                    text: 'Usuario ingresado ya existe, por favor ingrese uno nuevamente.'  
+                  }));
 
         } else {
-            if (confirmacionPass != nuevoPass) {
-                return (alert('Las contraseñas no coinciden.'));
+            if (confirmacionPass != nuevoPass) {    // indica que las contraseñas ingresadas no coinciden
+                return (
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Las contraseñas no coinciden.',
+                      })
+                    );
             } else {
 
 
                 const usuarioNuevo = new usuario(nuevoUser, nuevoPass);
                 usuariosDB.push(usuarioNuevo);
                 usuarioNuevo.asignarIdUs(usuariosDB);
-                alert("Nuevo usuario cargado exitosamente.")
+                Swal.fire(
+                    'Exito',
+                    'Nuevo usuario cargado correctamente.',
+                    'success'
+                  )
+                
                 usuarioRegistro.value = '';
                 contraRegistro.value = '';
                 contraConfirmacion.value = '';
@@ -121,10 +149,10 @@ function registroUsuario(usuariosDB, userRegistro, passRegistro, passConfirmacio
     }
 }
 
-function inicioSesion(usuariosDB, userLogin, contraLogin) {
+function inicioSesion(usuariosDB, userLogin, contraLogin) { //si el usuario ingresado no esta definido va a indicar que no existe
     let userIngresado = usuariosDB.find((usuariosDB) => usuariosDB.user == userLogin);
 
-    if (typeof userIngresado === 'undefined') {    //si el usuario buscado no esta definido va a tirar que no existe
+    if (typeof userIngresado === 'undefined') {    
         return false;
     } else {
         
@@ -136,20 +164,20 @@ function inicioSesion(usuariosDB, userLogin, contraLogin) {
     }
 }
 
-function logueoGuardado(usuario) {
+function logueoGuardado(usuario) {  // si encuentra usuario guardado en localstorage, lo muestra, carga nuevamente las tarjetas en el contenedor e intercambia la visibilidad de las de clase toggle
 
     if (usuario) {
         saludoUs(usuario);
-        mostrarArticulos(Articulos);
         intercambiarPresentacion(toggles, 'd-none');
+        mostrarArticulos(Articulos);
     }
 
 }
 
 function mostrarArticulos(array) {
-    tarjetaArticulo.innerHTML = ''; //limpia el contenedor de tarjetas
+    tarjetaArticulo.innerHTML = ''; //limpia el contenedor de tarjetas cada vez que se ejecute para las diferentes funciones que la llamen
 
-    array.forEach((element) => {
+    array.forEach((element) => {    //por cada elemento del array crea una tarjeta de articulo con descripccion y boton de agregar al carrito
         const div = document.createElement('div')
         div.classList.add('producto')
         div.innerHTML = `
@@ -165,20 +193,11 @@ function mostrarArticulos(array) {
 
         tarjetaArticulo.appendChild(div)
 
-        const btnAgregar = document.getElementById(`agregar${element.id}`)
+        const btnAgregar = document.getElementById(`agregar${element.id}`)  
 
         btnAgregar.addEventListener('click', () => {
             agregarAlCarrito(element.id)
-            Toastify({
-                text: 'Articulo Agregado',
-                duration: 1500,
-                style: {
-                    color: 'white',
-                    width: '15vw',
-                    height: 80,
-                    background: "radial-gradient(circle, rgba(0,15,143,1) 0%, rgba(3,0,103,1) 61%, rgba(0,0,0,1) 100%)"
-                }
-            }).showToast();
+            
         })
 
     })
@@ -186,13 +205,16 @@ function mostrarArticulos(array) {
 }
 
 
- function agregarAlCarrito(articuloID) { // DESCONTAR STOCK DE LA PAGINA AL AGREGAR AL CARRITO
+ function agregarAlCarrito(articuloID) { //toma el id del articulo y lo busca dentro de la BD, si lo encuentra lo imprime dentro del carrito
+
 
     
-    const repetido = carrito.some(articulo => articulo.id === articuloID)
+    const repetido = carrito.some(articulo => articulo.id === articuloID)   //verifica si existe un articulo con el mismo id en carrito y lo suma en un contador del mismo articulo
+    
     Articulos[articuloID].stock-=1;
-    if(Articulos[articuloID].stock>=0)
+    if(Articulos[articuloID].stock>=0)  // hace que ingrese al carrito el articulo siempre y cuando posea stock del mismo en la BD
     {
+        
         if (repetido) {
 
         const producto = carrito.map(producto => {
@@ -210,15 +232,28 @@ function mostrarArticulos(array) {
         carrito.push(producto);
         
     }
+    Toastify({
+        text: 'Articulo Agregado',
+        duration: 1500,
+        style: {
+            color: 'white',
+            width: '15vw',
+            height: 80,
+            background: "radial-gradient(circle, rgba(0,15,143,1) 0%, rgba(3,0,103,1) 61%, rgba(0,0,0,1) 100%)"
+        }
+    }).showToast();
+    
     actualizarCarrito();
     mostrarArticulos(Articulos);
 }else{
+
     Swal.fire({
         icon: 'error',
         title: 'ERROR',
         text: 'No hay suficientes unidades en el stock',
         
       })
+      Articulos[articuloID].stock=0;
 }
     
     
@@ -433,6 +468,7 @@ btnComprarCarrito.addEventListener('click', () => {
 
 })
 
-
-
-window.onload = () => logueoGuardado(traerUsuario(localStorage));
+window.onload = () => { setTimeout(() => {  //aca llamo a la funcion que si esta logueado el usuario y lo guardo en el localstorage lo muestre al cargar la pagina
+    logueoGuardado(traerUsuario(localStorage)); // tambien esta siendo ejecutado por una funcion asincronica para que se ejecute la carga de la DB al recargarse la pagina 
+}, 10);                                         
+};
